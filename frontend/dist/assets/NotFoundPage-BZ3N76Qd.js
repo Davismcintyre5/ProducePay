@@ -1,0 +1,6 @@
+import{j as e}from"./query-Dwq__Goa.js";import{L as t}from"./vendor-BpEsAqFV.js";import{B as s}from"./Button-flK_EX8X.js";import{R as a}from"./index-fTCwKQeU.js";import{c as r}from"./createLucideIcon-HsS6gfMq.js";import"./charts-ttD_XUVH.js";/**
+ * @license lucide-react v0.469.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const o=r("Compass",[["path",{d:"m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z",key:"9ktpf1"}],["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}]]);function x(){return e.jsxs("div",{className:"flex min-h-screen flex-col items-center justify-center bg-surface-muted p-4 text-center dark:bg-surface-darkMuted",children:[e.jsx("div",{className:"mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500",children:e.jsx(o,{size:32})}),e.jsx("h1",{className:"text-xl font-semibold text-slate-800 dark:text-slate-100",children:"Page not found"}),e.jsx("p",{className:"mt-2 max-w-sm text-sm text-slate-500 dark:text-slate-400",children:"The page you were looking for doesn't exist or has been moved."}),e.jsx(t,{to:a.DASHBOARD,className:"mt-6",children:e.jsx(s,{children:"Back to Dashboard"})})]})}export{x as default};
