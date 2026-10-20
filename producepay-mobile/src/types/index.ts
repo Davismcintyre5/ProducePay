@@ -1,5 +1,7 @@
 import type { NavigatorScreenParams } from '@react-navigation/native';
 
+// ─── Models ──────────────────────────────────────────────────
+
 export type User = {
   id: string;
   username: string;
@@ -8,6 +10,7 @@ export type User = {
   email: string;
   role: 'ADMIN' | 'MANAGER' | 'CLERK';
   active: boolean;
+  lastLoginAt?: string;
 };
 
 export type FarmerSnapshot = {
@@ -88,6 +91,8 @@ export type Settings = {
   };
 };
 
+// ─── API Responses ───────────────────────────────────────────
+
 export type ApiResponse<T> = {
   success: boolean;
   data: T;
@@ -98,6 +103,8 @@ export type ApiResponse<T> = {
     totalPages: number;
   };
 };
+
+// ─── Navigation ──────────────────────────────────────────────
 
 export type RootStackParamList = {
   Auth: NavigatorScreenParams<AuthStackParamList>;
@@ -116,7 +123,8 @@ export type MainTabParamList = {
 };
 
 export type HomeStackParamList = {
-  HomeHome: undefined;
+  Dashboard: undefined;
+  Reports: undefined;
 };
 
 export type DeliveriesStackParamList = {
@@ -133,4 +141,6 @@ export type PaymentsStackParamList = {
 export type ProfileStackParamList = {
   ProfileHome: undefined;
   SyncStatus: undefined;
+  Users: undefined;
+  Settings: undefined;
 };

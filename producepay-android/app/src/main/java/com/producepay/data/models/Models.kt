@@ -1,0 +1,16 @@
+package com.producepay.data.models
+import com.google.gson.annotations.SerializedName
+data class User(val id: String, val username: String, val fullName: String, val phone: String, val email: String, val role: String, val active: Boolean = true)
+data class FarmerSnapshot(val code: String, val name: String, val phone: String, val location: String? = null, val weightKg: Double? = null, val ratePerKg: Double? = null)
+data class Delivery(val id: String, val code: String, val farmer: String, val farmerSnapshot: FarmerSnapshot, val weightKg: Double, val ratePerKg: Double, val totalKes: Double, val collectedAt: String, val recordedBy: String, val notes: String? = null)
+data class Payment(val id: String, val receiptNo: String, val delivery: Any?, val farmer: String, val farmerSnapshot: FarmerSnapshot, val amountKes: Double, val status: String, val method: String? = null, val reference: String? = null, val paidAt: String? = null, val createdAt: String)
+data class SettingsData(val organisation: OrganisationSettings, val business: BusinessSettings, val notifications: NotificationSettings, val receipts: ReceiptSettings)
+data class OrganisationSettings(val orgName: String, val shortName: String, val phone: String, val email: String)
+data class BusinessSettings(val ratePerKg: Double, val currency: String)
+data class NotificationSettings(val emailEnabled: Boolean, val smsEnabled: Boolean)
+data class ReceiptSettings(val prefix: String)
+data class ApiResponse<T>(val success: Boolean, val data: T, val meta: Meta? = null)
+data class Meta(val page: Int, val limit: Int, val total: Int, val totalPages: Int)
+data class LoginRequest(val email: String, val password: String)
+data class LoginResponse(val user: User, val accessToken: String)
+data class CreateDeliveryRequest(val farmerId: String, val weightKg: Double, val collectedAt: String, val notes: String? = null, val clientRequestId: String)

@@ -10,9 +10,10 @@ type AuthState = {
   boot: () => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  hasRole: (...roles: string[]) => boolean;
 };
 
-export const useAuth = create<AuthState>((set) => ({
+export const useAuth = create<AuthState>((set, get) => ({
   user: null,
   status: 'loading',
   error: null,
@@ -38,9 +39,8 @@ export const useAuth = create<AuthState>((set) => ({
     set({ error: null });
     try {
       const { user, accessToken, refreshToken } = await authApi.login(email, password);
-      if (!refreshToken) {
-        throw new Error('Server did not return a refresh token');
-      }
+      if (!refreshToken) throw new Error('Server did not return a refresh token');
+      
       await secureStore.saveTokens(accessToken, refreshToken);
       await secureStore.saveUser(user);
       set({ status: 'authenticated', user, error: null });
@@ -55,5 +55,12 @@ export const useAuth = create<AuthState>((set) => ({
     await authApi.logout();
     await secureStore.clearAll();
     set({ status: 'anonymous', user: null, error: null });
+  },
+
+  hasRole: (...roles: string[]) => {
+    const { user } = get();
+    if (!user) return false;
+    if (roles.length === 0) return true;
+    return roles.includes(user.role);
   }
 }));

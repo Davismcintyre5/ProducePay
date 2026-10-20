@@ -26,6 +26,7 @@ export function isSyncing(): boolean {
 
 export async function syncOutbox(): Promise<{ synced: number; failed: number }> {
   if (running) return { synced: 0, failed: 0 };
+  
   running = true;
   emit();
 
@@ -47,6 +48,7 @@ export async function syncOutbox(): Promise<{ synced: number; failed: number }> 
           notes: item.notes ?? undefined,
           clientRequestId: item.client_request_id
         });
+        
         await markSynced(item.client_request_id);
         synced += 1;
       } catch (err: any) {
@@ -55,12 +57,17 @@ export async function syncOutbox(): Promise<{ synced: number; failed: number }> 
           err?.response?.data?.error?.message ||
           err?.message ||
           'Network error';
+          
+        // If it's a 401, the axios interceptor will handle refreshing the token.
+        // We just mark it as failed for this cycle so it retries next time.
         await markFailed(item.client_request_id, msg);
         failed += 1;
       } finally {
         emit();
       }
     }
+  } catch (globalErr) {
+    console.error('Sync engine fatal error:', globalErr);
   } finally {
     running = false;
     emit();

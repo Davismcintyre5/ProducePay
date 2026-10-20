@@ -1,28 +1,18 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  RefreshControl
-} from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 import * as paymentApi from '../../api/payment';
 import { formatKes, formatDate } from '../../lib/format';
 import { colors, spacing, fontSize, radius } from '../../theme';
 
 function statusColor(status: string) {
   switch (status) {
-    case 'PAID':
-      return colors.success;
-    case 'PENDING':
-      return colors.warning;
-    case 'FAILED':
-      return colors.danger;
-    default:
-      return colors.gray[400];
+    case 'PAID': return colors.success;
+    case 'PENDING': return colors.warning;
+    case 'FAILED': return colors.danger;
+    default: return colors.gray[400];
   }
 }
 
@@ -30,7 +20,7 @@ export default function PaymentList() {
   const navigation = useNavigation<any>();
 
   const { data, isLoading, refetch, isRefetching } = useQuery({
-    queryKey: ['payments', 'list'],
+    queryKey: ['payments'],
     queryFn: () => paymentApi.list({ limit: 50 })
   });
 
@@ -62,16 +52,11 @@ export default function PaymentList() {
         <TouchableOpacity
           style={styles.card}
           onPress={() => navigation.navigate('PaymentDetail', { id: item.id })}
-          activeOpacity={0.85}
+          activeOpacity={0.7}
         >
           <View style={styles.top}>
             <Text style={styles.receipt}>{item.receiptNo}</Text>
-            <View
-              style={[
-                styles.badge,
-                { backgroundColor: statusColor(item.status) + '20' }
-              ]}
-            >
+            <View style={[styles.badge, { backgroundColor: statusColor(item.status) + '20' }]}>
               <Text style={[styles.badgeText, { color: statusColor(item.status) }]}>
                 {item.status}
               </Text>
@@ -80,7 +65,10 @@ export default function PaymentList() {
           <Text style={styles.farmer}>{item.farmerSnapshot?.name}</Text>
           <View style={styles.bottom}>
             <Text style={styles.amount}>{formatKes(item.amountKes)}</Text>
-            <Text style={styles.date}>{formatDate(item.createdAt)}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
+              <Text style={styles.date}>{formatDate(item.createdAt)}</Text>
+              <Ionicons name="chevron-forward" size={16} color={colors.gray[400]} />
+            </View>
           </View>
         </TouchableOpacity>
       )}

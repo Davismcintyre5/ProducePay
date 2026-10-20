@@ -41,7 +41,7 @@ export async function insert(item: OutboxItem): Promise<void> {
   );
 }
 
-export async function listPending(): Promise<OutboxItem[]> {
+export async function listPendingOutbox(): Promise<OutboxItem[]> {
   const db = await getDB();
   return db.getAllAsync<OutboxItem>(
     "SELECT * FROM outbox WHERE status IN ('pending', 'failed') ORDER BY created_at ASC"

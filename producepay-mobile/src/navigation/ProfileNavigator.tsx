@@ -2,6 +2,8 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Profile from '../screens/profile/Profile';
 import SyncStatus from '../screens/profile/SyncStatus';
+import Settings from '../screens/profile/Settings';
+import Users from '../screens/profile/Users';
 import { colors } from '../theme';
 import type { ProfileStackParamList } from '../types';
 
@@ -26,6 +28,16 @@ export default function ProfileNavigator() {
         name="SyncStatus"
         component={SyncStatus}
         options={{ title: 'Sync Status' }}
+      />
+      <Stack.Screen
+        name="Users"
+        component={Users}
+        options={{ title: 'Manage Users' }}
+      />
+      <Stack.Screen
+        name="Settings"
+        component={Settings}
+        options={{ title: 'Settings' }}
       />
     </Stack.Navigator>
   );

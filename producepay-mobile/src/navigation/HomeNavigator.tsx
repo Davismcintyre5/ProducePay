@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import Home from '../screens/home/Home';
+import Dashboard from '../screens/home/Dashboard';
+import Reports from '../screens/home/Reports';
 import { colors } from '../theme';
 import type { HomeStackParamList } from '../types';
 
@@ -12,13 +13,19 @@ export default function HomeNavigator() {
       screenOptions={{
         headerStyle: { backgroundColor: colors.primary[800] },
         headerTintColor: colors.white,
-        headerTitleStyle: { fontWeight: '600' }
+        headerTitleStyle: { fontWeight: '600' },
+        headerBackTitle: 'Back'
       }}
     >
       <Stack.Screen
-        name="HomeHome"
-        component={Home}
-        options={{ title: 'ProducePay' }}
+        name="Dashboard"
+        component={Dashboard}
+        options={{ title: 'Dashboard' }}
+      />
+      <Stack.Screen
+        name="Reports"
+        component={Reports}
+        options={{ title: 'Reports' }}
       />
     </Stack.Navigator>
   );

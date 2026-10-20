@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Alert
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../hooks/useAuth';
@@ -26,8 +19,12 @@ export default function Profile() {
     ]);
   };
 
+  const isAdmin = user?.role === 'ADMIN';
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ padding: spacing.lg }}>
+      
+      {/* Header Profile Info */}
       <View style={styles.header}>
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>
@@ -38,22 +35,30 @@ export default function Profile() {
         <Text style={styles.role}>{user?.role}</Text>
       </View>
 
+      {/* Contact Info */}
       <View style={styles.card}>
-        <InfoRow label="Email" value={user?.email ?? '—'} />
-        <InfoRow label="Phone" value={formatPhone(user?.phone)} />
+        <View style={styles.infoRow}>
+          <Text style={styles.infoLabel}>Email</Text>
+          <Text style={styles.infoValue}>{user?.email ?? '—'}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.infoLabel}>Phone</Text>
+          <Text style={styles.infoValue}>{formatPhone(user?.phone)}</Text>
+        </View>
       </View>
 
+      {/* Sync Status Link */}
       <TouchableOpacity
         style={styles.card}
         onPress={() => navigation.navigate('SyncStatus')}
         activeOpacity={0.7}
       >
         <View style={styles.linkRow}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+          <View style={styles.linkLeft}>
             <Ionicons name="cloud-upload-outline" size={20} color={colors.primary[600]} />
             <Text style={styles.linkLabel}>Sync status</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+          <View style={styles.linkRight}>
             <Text style={styles.linkValue}>
               {!online ? 'Offline' : pending.length > 0 ? `${pending.length} pending` : 'All synced'}
             </Text>
@@ -62,20 +67,46 @@ export default function Profile() {
         </View>
       </TouchableOpacity>
 
+      {/* Admin Only Links */}
+      {isAdmin && (
+        <>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => navigation.navigate('Users')}
+            activeOpacity={0.7}
+          >
+            <View style={styles.linkRow}>
+              <View style={styles.linkLeft}>
+                <Ionicons name="people-outline" size={20} color={colors.primary[600]} />
+                <Text style={styles.linkLabel}>Manage Users</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color={colors.gray[400]} />
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => navigation.navigate('Settings')}
+            activeOpacity={0.7}
+          >
+            <View style={styles.linkRow}>
+              <View style={styles.linkLeft}>
+                <Ionicons name="settings-outline" size={20} color={colors.primary[600]} />
+                <Text style={styles.linkLabel}>Settings</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color={colors.gray[400]} />
+            </View>
+          </TouchableOpacity>
+        </>
+      )}
+
+      {/* Logout Button */}
       <TouchableOpacity style={[styles.card, styles.logout]} onPress={handleLogout}>
         <Ionicons name="log-out-outline" size={20} color={colors.danger} />
         <Text style={styles.logoutText}>Log out</Text>
       </TouchableOpacity>
-    </ScrollView>
-  );
-}
 
-function InfoRow({ label, value }: { label: string; value: string }) {
-  return (
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>{label}</Text>
-      <Text style={styles.infoValue}>{value}</Text>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -93,7 +124,7 @@ const styles = StyleSheet.create({
   },
   avatarText: { color: colors.white, fontSize: 32, fontWeight: '700' },
   name: { fontSize: fontSize.xl, fontWeight: '700', color: colors.gray[800] },
-  role: { fontSize: fontSize.sm, color: colors.gray[500], marginTop: 2 },
+  role: { fontSize: fontSize.sm, color: colors.gray[500], marginTop: 2, fontWeight: '600' },
   card: {
     backgroundColor: colors.white,
     borderRadius: radius.md,
@@ -104,8 +135,10 @@ const styles = StyleSheet.create({
   infoLabel: { fontSize: fontSize.sm, color: colors.gray[500] },
   infoValue: { fontSize: fontSize.sm, color: colors.gray[800], fontWeight: '500' },
   linkRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  linkLabel: { fontSize: fontSize.md, color: colors.gray[800] },
+  linkLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+  linkRight: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  linkLabel: { fontSize: fontSize.md, color: colors.gray[800], fontWeight: '500' },
   linkValue: { fontSize: fontSize.sm, color: colors.gray[500] },
-  logout: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+  logout: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.md, marginTop: spacing.lg },
   logoutText: { fontSize: fontSize.md, color: colors.danger, fontWeight: '600' }
 });

@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  RefreshControl
-} from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -20,7 +13,7 @@ export default function DeliveryList() {
   const { pending } = useSync();
 
   const { data, isLoading, refetch, isRefetching } = useQuery({
-    queryKey: ['deliveries', 'today'],
+    queryKey: ['deliveries'],
     queryFn: () => deliveryApi.list({ limit: 50 })
   });
 
@@ -31,7 +24,6 @@ export default function DeliveryList() {
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => navigation.navigate('NewDelivery')}
-        activeOpacity={0.85}
       >
         <Ionicons name="add-circle" size={22} color={colors.white} />
         <Text style={styles.addText}>Record New Delivery</Text>
@@ -64,7 +56,11 @@ export default function DeliveryList() {
             <Text style={styles.empty}>No deliveries yet.</Text>
           }
           renderItem={({ item }) => (
-            <View style={styles.card}>
+            <TouchableOpacity
+              style={styles.card}
+              onPress={() => navigation.navigate('DeliveryDetail', { id: item.id })}
+              activeOpacity={0.7}
+            >
               <View style={styles.cardHeader}>
                 <Text style={styles.code}>{item.code}</Text>
                 <Text style={styles.farmer}>{item.farmerSnapshot.name}</Text>
@@ -73,8 +69,11 @@ export default function DeliveryList() {
                 <Text style={styles.meta}>{formatKg(item.weightKg)}</Text>
                 <Text style={styles.meta}>{formatKes(item.totalKes)}</Text>
               </View>
-              <Text style={styles.date}>{formatDateTime(item.collectedAt)}</Text>
-            </View>
+              <View style={styles.cardFooter}>
+                <Text style={styles.date}>{formatDateTime(item.collectedAt)}</Text>
+                <Ionicons name="chevron-forward" size={16} color={colors.gray[400]} />
+              </View>
+            </TouchableOpacity>
           )}
         />
       )}
@@ -122,5 +121,14 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm
   },
   meta: { fontSize: fontSize.md, color: colors.primary[700], fontWeight: '500' },
-  date: { fontSize: fontSize.xs, color: colors.gray[400], marginTop: spacing.xs }
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: spacing.sm,
+    paddingTop: spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: colors.gray[100]
+  },
+  date: { fontSize: fontSize.xs, color: colors.gray[400] }
 });
