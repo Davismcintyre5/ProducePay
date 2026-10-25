@@ -42,6 +42,15 @@ const updateSettingsSchema = z.object({
       prefix: z.string().min(1).max(8).optional(),
       footerNote: z.string().max(300).optional()
     })
+    .optional(),
+  backups: z
+    .object({
+      enabled: z.boolean().optional(),
+      frequency: z.enum(['daily', 'weekly', 'monthly']).optional(),
+      time: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+      emailOnCompletion: z.boolean().optional(),
+      emailRecipient: z.string().email().max(254).optional().or(z.literal(''))
+    })
     .optional()
 });
 

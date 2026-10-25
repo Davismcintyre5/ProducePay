@@ -15,6 +15,7 @@ const ReceiptPage = lazy(() => import('@/pages/ReceiptPage'));
 const ReportsPage = lazy(() => import('@/pages/ReportsPage'));
 const UsersPage = lazy(() => import('@/pages/UsersPage'));
 const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
+const BackupsPage = lazy(() => import('@/pages/BackupsPage'));
 const ForbiddenPage = lazy(() => import('@/pages/ForbiddenPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 
@@ -76,6 +77,7 @@ export default function AppRoutes() {
             <Route element={<RoleRoute roles={['ADMIN']} />}>
               <Route path={ROUTES.USERS} element={<UsersPage />} />
               <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
+              <Route path={ROUTES.BACKUPS} element={<BackupsPage />} />
             </Route>
           </Route>
 

@@ -6,6 +6,7 @@ import paymentRoutes from './paymentRoutes.js';
 import reportRoutes from './reportRoutes.js';
 import userRoutes from './userRoutes.js';
 import settingsRoutes from './settingsRoutes.js';
+import backupRoutes from './backupRoutes.js';
 import publicRoutes from './publicRoutes.js';
 
 const router = Router();
@@ -18,5 +19,6 @@ router.use('/payments', paymentRoutes);
 router.use('/reports', reportRoutes);
 router.use('/users', userRoutes);
 router.use('/settings', settingsRoutes);
+router.use('/backups', backupRoutes);
 
 export default router;

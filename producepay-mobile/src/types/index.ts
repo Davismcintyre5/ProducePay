@@ -1,7 +1,5 @@
 import type { NavigatorScreenParams } from '@react-navigation/native';
 
-// ─── Models ──────────────────────────────────────────────────
-
 export type User = {
   id: string;
   username: string;
@@ -91,8 +89,6 @@ export type Settings = {
   };
 };
 
-// ─── API Responses ───────────────────────────────────────────
-
 export type ApiResponse<T> = {
   success: boolean;
   data: T;
@@ -103,8 +99,6 @@ export type ApiResponse<T> = {
     totalPages: number;
   };
 };
-
-// ─── Navigation ──────────────────────────────────────────────
 
 export type RootStackParamList = {
   Auth: NavigatorScreenParams<AuthStackParamList>;
@@ -143,4 +137,5 @@ export type ProfileStackParamList = {
   SyncStatus: undefined;
   Users: undefined;
   Settings: undefined;
+  Backups: undefined;
 };

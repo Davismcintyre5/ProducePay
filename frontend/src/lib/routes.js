@@ -1,6 +1,5 @@
 export const ROUTES = {
   LOGIN: '/login',
-
   DASHBOARD: '/dashboard',
   FARMERS: '/farmers',
   FARMER_DETAIL: (id) => `/farmers/${id}`,
@@ -11,7 +10,7 @@ export const ROUTES = {
   REPORTS: '/reports',
   USERS: '/users',
   SETTINGS: '/settings',
-
+  BACKUPS: '/backups',
   FORBIDDEN: '/forbidden',
   NOT_FOUND: '/404'
 };

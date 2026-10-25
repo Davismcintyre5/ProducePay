@@ -46,10 +46,13 @@ const schema = z.object({
 
   DEFAULT_RATE_PER_KG: z.coerce.number().min(0),
 
-  // Added for Keep-Alive
   API_URL: z.string().url().optional().or(z.literal('')),
   KEEP_ALIVE_ENABLED: booleanish.optional().default('false'),
   KEEP_ALIVE_VERBOSE: booleanish.optional().default('false'),
+
+  CLOUDINARY_CLOUD_NAME: z.string().min(1),
+  CLOUDINARY_API_KEY: z.string().min(1),
+  CLOUDINARY_API_SECRET: z.string().min(1),
 
   SENTRY_DSN: z.string().optional().default('')
 });

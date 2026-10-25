@@ -36,6 +36,14 @@ const settingsSchema = new mongoose.Schema(
       footerNote: { type: String, default: 'Thank you for your delivery.', trim: true }
     },
 
+    backups: {
+      enabled: { type: Boolean, default: false },
+      frequency: { type: String, enum: ['daily', 'weekly', 'monthly'], default: 'daily' },
+      time: { type: String, default: '02:00' },
+      emailOnCompletion: { type: Boolean, default: false },
+      emailRecipient: { type: String, default: '', lowercase: true, trim: true }
+    },
+
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
   },
   {

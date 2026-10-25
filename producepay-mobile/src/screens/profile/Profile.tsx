@@ -24,7 +24,6 @@ export default function Profile() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ padding: spacing.lg }}>
       
-      {/* Header Profile Info */}
       <View style={styles.header}>
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>
@@ -35,7 +34,6 @@ export default function Profile() {
         <Text style={styles.role}>{user?.role}</Text>
       </View>
 
-      {/* Contact Info */}
       <View style={styles.card}>
         <View style={styles.infoRow}>
           <Text style={styles.infoLabel}>Email</Text>
@@ -47,7 +45,6 @@ export default function Profile() {
         </View>
       </View>
 
-      {/* Sync Status Link */}
       <TouchableOpacity
         style={styles.card}
         onPress={() => navigation.navigate('SyncStatus')}
@@ -67,7 +64,6 @@ export default function Profile() {
         </View>
       </TouchableOpacity>
 
-      {/* Admin Only Links */}
       {isAdmin && (
         <>
           <TouchableOpacity
@@ -97,10 +93,23 @@ export default function Profile() {
               <Ionicons name="chevron-forward" size={18} color={colors.gray[400]} />
             </View>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => navigation.navigate('Backups')}
+            activeOpacity={0.7}
+          >
+            <View style={styles.linkRow}>
+              <View style={styles.linkLeft}>
+                <Ionicons name="server-outline" size={20} color={colors.primary[600]} />
+                <Text style={styles.linkLabel}>Database Backups</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color={colors.gray[400]} />
+            </View>
+          </TouchableOpacity>
         </>
       )}
 
-      {/* Logout Button */}
       <TouchableOpacity style={[styles.card, styles.logout]} onPress={handleLogout}>
         <Ionicons name="log-out-outline" size={20} color={colors.danger} />
         <Text style={styles.logoutText}>Log out</Text>

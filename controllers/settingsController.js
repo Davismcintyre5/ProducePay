@@ -4,7 +4,7 @@ import asyncHandler from '../utils/asyncHandler.js';
 import Settings from '../models/Settings.js';
 import AuditLog from '../models/AuditLog.js';
 
-const EDITABLE_GROUPS = ['organisation', 'business', 'notifications', 'receipts'];
+const EDITABLE_GROUPS = ['organisation', 'business', 'notifications', 'receipts', 'backups'];
 
 export const get = asyncHandler(async (req, res) => {
   const settings = await Settings.getGlobal();
@@ -51,10 +51,10 @@ export const reset = asyncHandler(async (req, res) => {
   for (const group of EDITABLE_GROUPS) {
     settings.set(group, {});
   }
-  settings.markModified('organisation');
-  settings.markModified('business');
-  settings.markModified('notifications');
-  settings.markModified('receipts');
+  
+  for (const group of EDITABLE_GROUPS) {
+    settings.markModified(group);
+  }
 
   await settings.save();
   await Settings.deleteOne({ _id: 'global' });

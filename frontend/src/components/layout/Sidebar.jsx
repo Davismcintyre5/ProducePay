@@ -7,6 +7,7 @@ import {
   BarChart3,
   UserCog,
   Settings as SettingsIcon,
+  Database,
   LogOut
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -20,7 +21,8 @@ const navItems = [
   { to: ROUTES.PAYMENTS, label: 'Payments', icon: Wallet, roles: ['ADMIN', 'MANAGER', 'CLERK'] },
   { to: ROUTES.REPORTS, label: 'Reports', icon: BarChart3, roles: ['ADMIN', 'MANAGER'] },
   { to: ROUTES.USERS, label: 'Users', icon: UserCog, roles: ['ADMIN'] },
-  { to: ROUTES.SETTINGS, label: 'Settings', icon: SettingsIcon, roles: ['ADMIN'] }
+  { to: ROUTES.SETTINGS, label: 'Settings', icon: SettingsIcon, roles: ['ADMIN'] },
+  { to: ROUTES.BACKUPS, label: 'Backups', icon: Database, roles: ['ADMIN'] }
 ];
 
 export default function Sidebar() {
