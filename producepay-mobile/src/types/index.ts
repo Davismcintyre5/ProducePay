@@ -1,5 +1,7 @@
 import type { NavigatorScreenParams } from '@react-navigation/native';
 
+// ─── Models ──────────────────────────────────────────────────
+
 export type User = {
   id: string;
   username: string;
@@ -87,7 +89,16 @@ export type Settings = {
     prefix: string;
     footerNote: string;
   };
+  backups: {
+    enabled: boolean;
+    frequency: 'daily' | 'weekly' | 'monthly';
+    time: string;
+    emailOnCompletion: boolean;
+    emailRecipient: string;
+  };
 };
+
+// ─── API Responses ───────────────────────────────────────────
 
 export type ApiResponse<T> = {
   success: boolean;
@@ -100,6 +111,8 @@ export type ApiResponse<T> = {
   };
 };
 
+// ─── Navigation ──────────────────────────────────────────────
+
 export type RootStackParamList = {
   Auth: NavigatorScreenParams<AuthStackParamList>;
   Main: NavigatorScreenParams<MainTabParamList>;
@@ -111,6 +124,7 @@ export type AuthStackParamList = {
 
 export type MainTabParamList = {
   Home: NavigatorScreenParams<HomeStackParamList>;
+  Farmers: NavigatorScreenParams<FarmersStackParamList>;
   Deliveries: NavigatorScreenParams<DeliveriesStackParamList>;
   Payments: NavigatorScreenParams<PaymentsStackParamList>;
   Profile: NavigatorScreenParams<ProfileStackParamList>;
@@ -119,6 +133,11 @@ export type MainTabParamList = {
 export type HomeStackParamList = {
   Dashboard: undefined;
   Reports: undefined;
+};
+
+export type FarmersStackParamList = {
+  FarmerList: undefined;
+  FarmerDetail: { id: string };
 };
 
 export type DeliveriesStackParamList = {

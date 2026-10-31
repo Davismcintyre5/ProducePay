@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, ActivityIndicator, Alert } from 'react-native';
+import { 
+  View, Text, StyleSheet, FlatList, TouchableOpacity, 
+  Modal, TextInput, ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView
+} from 'react-native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
 import * as userApi from '../../api/user';
 import { formatPhone } from '../../lib/format';
 import { colors, spacing, fontSize, radius } from '../../theme';
-import type { User } from '../../types';
 
 export default function Users() {
   const queryClient = useQueryClient();
@@ -17,6 +19,7 @@ export default function Users() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState<'CLERK' | 'MANAGER' | 'ADMIN'>('CLERK');
 
   const { data, isLoading } = useQuery({
@@ -31,9 +34,17 @@ export default function Users() {
       setModalVisible(false);
       queryClient.invalidateQueries({ queryKey: ['users'] });
       // Reset form
-      setUsername(''); setFullName(''); setEmail(''); setPhone(''); setPassword(''); setRole('CLERK');
+      setUsername(''); setFullName(''); setEmail(''); setPhone(''); setPassword(''); setRole('CLERK'); setShowPassword(false);
     },
-    onError: (err: any) => Alert.alert('Error', err?.response?.data?.error?.message || 'Failed to create user')
+    onError: (err: any) => {
+      const msg = err?.response?.data?.error?.message || 'Failed to create user';
+      const details = err?.response?.data?.error?.details;
+      if (details && details.length > 0) {
+        Alert.alert('Validation Error', `${details[0].field}: ${details[0].issue}`);
+      } else {
+        Alert.alert('Error', msg);
+      }
+    }
   });
 
   const removeMutation = useMutation({
@@ -50,7 +61,18 @@ export default function Users() {
       Alert.alert('Missing fields', 'Please fill all fields.');
       return;
     }
-    createMutation.mutate({ username, fullName, email, phone, password, role });
+    if (password.length < 8) {
+      Alert.alert('Invalid Password', 'Password must be at least 8 characters long.');
+      return;
+    }
+    createMutation.mutate({ 
+      username: username.trim().toLowerCase(), 
+      fullName: fullName.trim(), 
+      email: email.trim().toLowerCase(), 
+      phone: phone.trim(), 
+      password, 
+      role 
+    });
   };
 
   const confirmDelete = (id: string, name: string) => {
@@ -96,51 +118,69 @@ export default function Users() {
               </TouchableOpacity>
             </View>
           )}
+          ListEmptyComponent={<Text style={styles.empty}>No users found.</Text>}
         />
       )}
 
       {/* Add User Modal */}
       <Modal visible={modalVisible} animationType="slide" presentationStyle="pageSheet">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Add New User</Text>
-            <TouchableOpacity onPress={() => setModalVisible(false)}>
-              <Ionicons name="close" size={24} color={colors.gray[500]} />
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.label}>Full Name</Text>
-          <TextInput style={styles.input} value={fullName} onChangeText={setFullName} placeholder="John Doe" />
-
-          <Text style={styles.label}>Username</Text>
-          <TextInput style={styles.input} value={username} onChangeText={setUsername} autoCapitalize="none" placeholder="johndoe" />
-
-          <Text style={styles.label}>Email</Text>
-          <TextInput style={styles.input} value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="john@example.com" />
-
-          <Text style={styles.label}>Phone</Text>
-          <TextInput style={styles.input} value={phone} onChangeText={setPhone} keyboardType="phone-pad" placeholder="0712345678" />
-
-          <Text style={styles.label}>Password</Text>
-          <TextInput style={styles.input} value={password} onChangeText={setPassword} secureTextEntry placeholder="Min 8 characters" />
-
-          <Text style={styles.label}>Role</Text>
-          <View style={styles.roleRow}>
-            {['CLERK', 'MANAGER', 'ADMIN'].map((r) => (
-              <TouchableOpacity
-                key={r}
-                style={[styles.roleBtn, role === r && styles.roleBtnActive]}
-                onPress={() => setRole(r as any)}
-              >
-                <Text style={[styles.roleText, role === r && styles.roleTextActive]}>{r}</Text>
+        <KeyboardAvoidingView 
+          style={{ flex: 1, backgroundColor: colors.white }} 
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
+          <ScrollView contentContainerStyle={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Add New User</Text>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Ionicons name="close" size={28} color={colors.gray[500]} />
               </TouchableOpacity>
-            ))}
-          </View>
+            </View>
 
-          <TouchableOpacity style={styles.saveBtn} onPress={handleCreate} disabled={createMutation.isPending}>
-            {createMutation.isPending ? <ActivityIndicator color={colors.white} /> : <Text style={styles.saveText}>Create User</Text>}
-          </TouchableOpacity>
-        </View>
+            <Text style={styles.label}>Full Name</Text>
+            <TextInput style={styles.input} value={fullName} onChangeText={setFullName} placeholder="Mercy Mutai" placeholderTextColor={colors.gray[400]} />
+
+            <Text style={styles.label}>Username</Text>
+            <TextInput style={styles.input} value={username} onChangeText={setUsername} autoCapitalize="none" placeholder="mercymutai" placeholderTextColor={colors.gray[400]} />
+
+            <Text style={styles.label}>Email</Text>
+            <TextInput style={styles.input} value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="mercy@moiben.co.ke" placeholderTextColor={colors.gray[400]} />
+
+            <Text style={styles.label}>Phone</Text>
+            <TextInput style={styles.input} value={phone} onChangeText={setPhone} keyboardType="phone-pad" placeholder="0712345678" placeholderTextColor={colors.gray[400]} />
+
+            <Text style={styles.label}>Password</Text>
+            <View style={styles.passwordContainer}>
+              <TextInput 
+                style={styles.passwordInput} 
+                value={password} 
+                onChangeText={setPassword} 
+                secureTextEntry={!showPassword} 
+                placeholder="Min 8 characters" 
+                placeholderTextColor={colors.gray[400]}
+              />
+              <TouchableOpacity style={styles.eyeIcon} onPress={() => setShowPassword(!showPassword)}>
+                <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={22} color={colors.gray[500]} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.label}>Role</Text>
+            <View style={styles.roleRow}>
+              {['CLERK', 'MANAGER', 'ADMIN'].map((r) => (
+                <TouchableOpacity
+                  key={r}
+                  style={[styles.roleBtn, role === r && styles.roleBtnActive]}
+                  onPress={() => setRole(r as any)}
+                >
+                  <Text style={[styles.roleText, role === r && styles.roleTextActive]}>{r}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <TouchableOpacity style={styles.saveBtn} onPress={handleCreate} disabled={createMutation.isPending}>
+              {createMutation.isPending ? <ActivityIndicator color={colors.white} /> : <Text style={styles.saveText}>Create User</Text>}
+            </TouchableOpacity>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </Modal>
     </View>
   );
@@ -150,27 +190,30 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.gray[50] },
   addBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, backgroundColor: colors.primary[600], margin: spacing.lg, paddingVertical: spacing.md, borderRadius: radius.md },
   addBtnText: { color: colors.white, fontSize: fontSize.md, fontWeight: '600' },
-  card: { backgroundColor: colors.white, padding: spacing.lg, borderRadius: radius.md, marginBottom: spacing.md },
+  card: { backgroundColor: colors.white, padding: spacing.lg, borderRadius: radius.md, marginBottom: spacing.md, borderWidth: 1, borderColor: colors.gray[100] },
   rowHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: spacing.sm },
-  name: { fontSize: fontSize.md, fontWeight: '600', color: colors.gray[800] },
-  sub: { fontSize: fontSize.xs, color: colors.gray[500] },
+  name: { fontSize: fontSize.md, fontWeight: '700', color: colors.gray[800] },
+  sub: { fontSize: fontSize.sm, color: colors.gray[500] },
   badge: { backgroundColor: colors.gray[200], paddingHorizontal: spacing.sm, paddingVertical: 2, borderRadius: radius.full },
   badgeAdmin: { backgroundColor: colors.primary[100] },
   badgeText: { fontSize: fontSize.xs, fontWeight: '700', color: colors.gray[700] },
-  contact: { fontSize: fontSize.sm, color: colors.gray[500], marginTop: 2 },
+  contact: { fontSize: fontSize.sm, color: colors.gray[600], marginTop: 2 },
   deleteBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: spacing.md, alignSelf: 'flex-start' },
-  deleteText: { fontSize: fontSize.sm, color: colors.danger, fontWeight: '500' },
-  
-  modalContainer: { flex: 1, backgroundColor: colors.white, padding: spacing.lg },
+  deleteText: { fontSize: fontSize.sm, color: colors.danger, fontWeight: '600' },
+  empty: { textAlign: 'center', color: colors.gray[400], marginTop: spacing.xl, fontStyle: 'italic' },
+  modalContainer: { padding: spacing.lg, paddingBottom: spacing.xxl },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg, marginTop: spacing.md },
   modalTitle: { fontSize: fontSize.xl, fontWeight: '700', color: colors.gray[800] },
-  label: { fontSize: fontSize.sm, color: colors.gray[600], marginTop: spacing.md, marginBottom: 4 },
-  input: { borderWidth: 1, borderColor: colors.gray[300], borderRadius: radius.sm, padding: spacing.md, fontSize: fontSize.md },
+  label: { fontSize: fontSize.sm, fontWeight: '600', color: colors.gray[700], marginTop: spacing.md, marginBottom: 6 },
+  input: { borderWidth: 1, borderColor: colors.gray[300], borderRadius: radius.md, paddingHorizontal: spacing.md, paddingVertical: spacing.md, fontSize: fontSize.md, color: colors.gray[900], backgroundColor: colors.gray[50] },
+  passwordContainer: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: colors.gray[300], borderRadius: radius.md, backgroundColor: colors.gray[50] },
+  passwordInput: { flex: 1, paddingHorizontal: spacing.md, paddingVertical: spacing.md, fontSize: fontSize.md, color: colors.gray[900] },
+  eyeIcon: { padding: spacing.md },
   roleRow: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.xs },
-  roleBtn: { flex: 1, paddingVertical: spacing.sm, alignItems: 'center', borderWidth: 1, borderColor: colors.gray[300], borderRadius: radius.md },
+  roleBtn: { flex: 1, paddingVertical: spacing.md, alignItems: 'center', borderWidth: 1, borderColor: colors.gray[300], borderRadius: radius.md, backgroundColor: colors.gray[50] },
   roleBtnActive: { borderColor: colors.primary[600], backgroundColor: colors.primary[50] },
-  roleText: { fontSize: fontSize.xs, fontWeight: '600', color: colors.gray[600] },
+  roleText: { fontSize: fontSize.sm, fontWeight: '600', color: colors.gray[600] },
   roleTextActive: { color: colors.primary[700] },
   saveBtn: { backgroundColor: colors.primary[600], paddingVertical: spacing.lg, borderRadius: radius.md, alignItems: 'center', marginTop: spacing.xl },
-  saveText: { color: colors.white, fontSize: fontSize.md, fontWeight: '600' },
+  saveText: { color: colors.white, fontSize: fontSize.md, fontWeight: '700' },
 });

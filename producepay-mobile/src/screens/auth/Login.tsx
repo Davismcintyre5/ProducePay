@@ -11,6 +11,7 @@ import {
   ScrollView,
   Alert
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../hooks/useAuth';
 import { colors, spacing, fontSize, radius } from '../../theme';
 
@@ -18,6 +19,7 @@ export default function Login() {
   const { login, error } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const onSubmit = async () => {
@@ -62,23 +64,35 @@ export default function Login() {
             autoCapitalize="none"
             keyboardType="email-address"
             autoComplete="email"
-            placeholder="you@example.com"
+            placeholder="mercy@moiben.co.ke"
             placeholderTextColor={colors.gray[400]}
             editable={!submitting}
           />
 
           <Text style={styles.label}>Password</Text>
-          <TextInput
-            style={styles.input}
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            autoComplete="password"
-            placeholder="••••••••"
-            placeholderTextColor={colors.gray[400]}
-            editable={!submitting}
-            onSubmitEditing={onSubmit}
-          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+              autoComplete="password"
+              placeholder="••••••••"
+              placeholderTextColor={colors.gray[400]}
+              editable={!submitting}
+              onSubmitEditing={onSubmit}
+            />
+            <TouchableOpacity
+              style={styles.eyeIcon}
+              onPress={() => setShowPassword(!showPassword)}
+            >
+              <Ionicons
+                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                size={22}
+                color={colors.gray[500]}
+              />
+            </TouchableOpacity>
+          </View>
 
           {error ? <Text style={styles.error}>{error}</Text> : null}
 
@@ -146,7 +160,25 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     fontSize: fontSize.md,
     color: colors.gray[900],
-    backgroundColor: colors.white
+    backgroundColor: colors.gray[50]
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.gray[300],
+    borderRadius: radius.md,
+    backgroundColor: colors.gray[50]
+  },
+  passwordInput: {
+    flex: 1,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    fontSize: fontSize.md,
+    color: colors.gray[900]
+  },
+  eyeIcon: {
+    padding: spacing.md
   },
   error: {
     color: colors.danger,

@@ -2,6 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import HomeNavigator from './HomeNavigator';
+import FarmersNavigator from './FarmersNavigator';
 import DeliveriesNavigator from './DeliveriesNavigator';
 import PaymentsNavigator from './PaymentsNavigator';
 import ProfileNavigator from './ProfileNavigator';
@@ -27,6 +28,9 @@ export default function MainTabNavigator() {
             case 'Home':
               iconName = focused ? 'home' : 'home-outline';
               break;
+            case 'Farmers':
+              iconName = focused ? 'people' : 'people-outline';
+              break;
             case 'Deliveries':
               iconName = focused ? 'cube' : 'cube-outline';
               break;
@@ -44,21 +48,10 @@ export default function MainTabNavigator() {
       })}
     >
       <Tab.Screen name="Home" component={HomeNavigator} options={{ title: 'Home' }} />
-      <Tab.Screen
-        name="Deliveries"
-        component={DeliveriesNavigator}
-        options={{ title: 'Deliveries' }}
-      />
-      <Tab.Screen
-        name="Payments"
-        component={PaymentsNavigator}
-        options={{ title: 'Payments' }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileNavigator}
-        options={{ title: 'Profile' }}
-      />
+      <Tab.Screen name="Farmers" component={FarmersNavigator} options={{ title: 'Farmers' }} />
+      <Tab.Screen name="Deliveries" component={DeliveriesNavigator} options={{ title: 'Deliveries' }} />
+      <Tab.Screen name="Payments" component={PaymentsNavigator} options={{ title: 'Payments' }} />
+      <Tab.Screen name="Profile" component={ProfileNavigator} options={{ title: 'Profile' }} />
     </Tab.Navigator>
   );
 }
